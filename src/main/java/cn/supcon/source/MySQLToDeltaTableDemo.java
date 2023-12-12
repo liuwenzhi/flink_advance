@@ -5,7 +5,8 @@ import org.apache.flink.table.api.TableEnvironment;
 import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
 
 /**
- * 基于flink-table方式实现mysql源表到delta目的端表
+ * 基于flink-table方式实现mysql源表到delta目的端表（未完成）
+ * 需要重写flink-cdc源码，具体参考：http://10.10.77.84/upload/forum.php?mod=viewthread&tid=121&extra=page%3D1
  */
 public class MySQLToDeltaTableDemo {
     public static void main(String[] args) throws Exception {

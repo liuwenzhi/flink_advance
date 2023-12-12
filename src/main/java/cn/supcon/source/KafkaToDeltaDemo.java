@@ -1,16 +1,11 @@
 package cn.supcon.source;
 
 import io.delta.flink.sink.DeltaSink;
-import org.apache.flink.api.common.eventtime.WatermarkStrategy;
-import org.apache.flink.api.common.serialization.SimpleStringSchema;
-import org.apache.flink.connector.kafka.source.KafkaSource;
-import org.apache.flink.connector.kafka.source.enumerator.initializer.OffsetsInitializer;
 import org.apache.flink.core.fs.Path;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.table.api.TableEnvironment;
 import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
 import org.apache.flink.table.data.RowData;
-import org.apache.flink.table.types.logical.RowType;
 import org.apache.hadoop.conf.Configuration;
 
 
@@ -44,7 +39,7 @@ public class KafkaToDeltaDemo {
 
 
 
-        JdbcSource jdbcSource = new JdbcSource();
+        MySqlJdbcSource jdbcSource = new MySqlJdbcSource();
         DeltaSink<RowData> deltaSink = DeltaSink
                 .forRowData(
                         new Path("hdfs://data62:8020/tmp/table_des"),

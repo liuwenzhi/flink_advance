@@ -1,5 +1,6 @@
 package cn.supcon.source;
 
+import cn.supcon.utils.RowUtil;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.flink.api.common.state.ListState;
 import org.apache.flink.api.common.state.ListStateDescriptor;
@@ -11,10 +12,8 @@ import org.apache.flink.runtime.state.FunctionSnapshotContext;
 import org.apache.flink.streaming.api.checkpoint.CheckpointedFunction;
 import org.apache.flink.streaming.api.functions.source.RichSourceFunction;
 import org.apache.flink.table.types.logical.BigIntType;
-import org.apache.flink.table.types.logical.IntType;
 import org.apache.flink.table.types.logical.RowType;
 import org.apache.flink.table.types.logical.VarCharType;
-import org.apache.flink.types.RowUtils;
 
 import java.sql.*;
 import java.util.Arrays;
@@ -24,9 +23,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
- * 自定义jdbcSource
+ * 自定义 mysql数据库jdbcSource源
  */
-public class JdbcSource extends RichSourceFunction<JSONObject> implements CheckpointedFunction {
+public class MySqlJdbcSource extends RichSourceFunction<JSONObject> implements CheckpointedFunction {
 
     private PreparedStatement preparedStatement = null;
 
@@ -61,7 +60,7 @@ public class JdbcSource extends RichSourceFunction<JSONObject> implements Checkp
         return connection;
     }
 
-    public JdbcSource() {
+    public MySqlJdbcSource() {
         super();
     }
 
@@ -93,10 +92,15 @@ public class JdbcSource extends RichSourceFunction<JSONObject> implements Checkp
     public void run(SourceContext<JSONObject> sourceContext) throws Exception {
         // 持续读取数据
         while (true) {
-            String sql = "select id,name,url,money from data-operation-test.event where id > " + offsetValue;
+            String sql = "select id,name,url,money from `data-operation-test`.`event` where id >= " + offsetValue;
             preparedStatement = connection.prepareStatement(sql);
             ResultSet resultSet = preparedStatement.executeQuery();
-            ResultSetMetaData metaData = resultSet.getMetaData();
+            while (resultSet.next()){
+                offsetValue = resultSet.getInt("id");
+                JSONObject jsonObject = RowUtil.resultSetToJson(resultSet,getRowType());
+                sourceContext.collect(jsonObject);
+            }
+            /*ResultSetMetaData metaData = resultSet.getMetaData();
             int columnCount = metaData.getColumnCount();
             while (resultSet.next()) {
                 offsetValue = resultSet.getInt("id");
@@ -108,7 +112,7 @@ public class JdbcSource extends RichSourceFunction<JSONObject> implements Checkp
                 }
                 // 数据扔给上下文下游算子
                 sourceContext.collect(jsonObject);
-            }
+            }*/
             TimeUnit.SECONDS.sleep(5);
         }
     }
