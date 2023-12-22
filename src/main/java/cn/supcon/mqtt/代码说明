@@ -1,2 +1,19 @@
 MQTT协议客户端和服务端代码，引用代码参考：
 https://segmentfault.com/a/1190000043634860
+
+MQTT相关材料：
+中文官网：https://mqtt.p2hp.com/
+英文官网：https://mqtt.org/
+https://zhuanlan.zhihu.com/p/421109780
+https://blog.csdn.net/jackwmj12/article/details/129163012
+docker desktop 安装使用教程
+https://blog.csdn.net/GoodburghCottage/article/details/131413312
+MQTT安装使用说明：
+https://zhuanlan.zhihu.com/p/386994328?utm_id=0
+
+在PowerShell里通过docker安装mqtt。
+docker pull emqx/emqx:latest
+docker run -dit --name emqx -p 1883:1883 -p 8081:8081 -p 8083:8083 -p 8883:8883 -p 8084:8084 -p 18083:18083 emqx/emqx:latest
+
+MQTT协议原理介绍及如何使用emqx
+https://blog.csdn.net/m0_60496161/article/details/131584553
