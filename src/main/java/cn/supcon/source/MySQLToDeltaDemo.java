@@ -25,7 +25,7 @@ public class MySQLToDeltaDemo {
         checkpointConfig.setCheckpointInterval(5000);
         checkpointConfig.setMaxConcurrentCheckpoints(1);
         checkpointConfig.setCheckpointingMode(CheckpointingMode.EXACTLY_ONCE);
-        checkpointConfig.setCheckpointStorage(new FileSystemCheckpointStorage("hdfs://data62:8020/tmp/checkpoints"));
+        checkpointConfig.setCheckpointStorage(new FileSystemCheckpointStorage("hdfs://data62:8020/tmp/checkpoints20231215"));
         checkpointConfig.setExternalizedCheckpointCleanup(CheckpointConfig.ExternalizedCheckpointCleanup.RETAIN_ON_CANCELLATION);
 
         // 自定义jdbc source
@@ -44,7 +44,7 @@ public class MySQLToDeltaDemo {
         // 自定义目的端算子
         DeltaSink<RowData> deltaSink = DeltaSink
                 .forRowData(
-                        new Path("hdfs://data62:8020/user/hive/warehouse/stg.db/test_1213"),
+                        new Path("hdfs://data62:8020/user/hive/warehouse/stg.db/test_1215"),
                         new org.apache.hadoop.conf.Configuration(),
                         jdbcSource.getRowType())
                 .build();
