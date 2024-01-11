@@ -1,0 +1,8 @@
+wordcount实例
+
+研发服务器上执行命令与输入的测试数据：
+[root@data23 ~]# nc -lk 7777
+hello flink
+hello java
+hello kava
+hello scala

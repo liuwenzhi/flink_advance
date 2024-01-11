@@ -144,6 +144,12 @@
             <artifactId>spring-integration-mqtt</artifactId>
             <version>6.0.2</version>
         </dependency>
+        <!--数据生成器-->
+        <dependency>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-connector-datagen</artifactId>
+            <version>${flink.version}</version>
+        </dependency>
     </dependencies>
 
 </project>

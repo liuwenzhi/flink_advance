@@ -1,0 +1,11 @@
+flink窗口相关函数
+服务器上启动socket监听相关命令
+nc -lk 7777
+参考视频课程地第10课：https://www.bilibili.com/video/BV1eg4y1V7AN?p=10&vd_source=c90ab55054dc7af5d0eb3ad775db7370
+实体类：WaterSensor实体类内容，在34课，源算子这里
+https://www.bilibili.com/video/BV1eg4y1V7AN?p=34&vd_source=c90ab55054dc7af5d0eb3ad775db7370
+自定义map算子在39课
+https://www.bilibili.com/video/BV1eg4y1V7AN?p=39&vd_source=c90ab55054dc7af5d0eb3ad775db7370
+WaterSeneorMapFunction定义在48课
+https://www.bilibili.com/video/BV1eg4y1V7AN?p=48&vd_source=c90ab55054dc7af5d0eb3ad775db7370
+疑问点：读取nc数据的代码位置，向nc里边模拟数据进去，然后从里边读取数据出来，找到这个代码位置。

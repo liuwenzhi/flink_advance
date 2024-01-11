@@ -65,7 +65,7 @@ public class KafkaProducerDemo {
 
     public static void main(String[] args) throws Exception {
         // 模拟Event的数据记录
-        for (int i = 50; i < 100; i++) {
+        for (int i = 100; i < 150; i++) {
             logger.info("输出第：" + i + "条记录");
             Event event = new Event("张三" + i, "https://localhost:777" + i, 1000L);
             sendMsg(JSONObject.toJSONString(event));
