@@ -5,11 +5,24 @@ import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
+/**
+ * 测试mqtt数据源连接
+ */
 public class MqttReceive {
+
     private MqttReceiveCallback mqttReceiveCallback = new MqttReceiveCallback();
 
-    private static int QoS = 1;//通讯的质量，最高是2
-    private static String Host = "tcp://127.0.0.1:1883";
+    /**
+     * 通讯的质量，最高是2
+     */
+    private static int QoS = 1;
+
+    // private static String Host = "tcp://127.0.0.1:1883";
+
+    /**
+     * 测试环境mqtt
+     */
+    private static String Host = "tcp://172.20.0.171:1883";
     private static MemoryPersistence memoryPersistence = null;
     private static MqttConnectOptions mqttConnectOptions = null;
     private static MqttClient mqttClient = null;
@@ -31,13 +44,16 @@ public class MqttReceive {
             mqttConnectOptions.setCleanSession(true);
             mqttConnectOptions.setConnectionTimeout(30);
             mqttConnectOptions.setKeepAliveInterval(45);
+            mqttConnectOptions.setUserName("user");
+            mqttConnectOptions.setPassword("user".toCharArray());
             if (null != mqttClient && !mqttClient.isConnected()) {
-                //这里可以自己new一个回调函数，比如new MqttReceiveCallback()。我这里使用自动装配，让Spring容器来管理bean与bean的依赖
+                // 这里可以自己new一个回调函数，比如new MqttReceiveCallback()。我这里使用自动装配，让Spring容器来管理bean与bean的依赖
                 mqttClient.setCallback(mqttReceiveCallback);
                 try {
                     System.out.println(mqttReceiveCallback);
                     System.out.println("尝试连接");
-                    mqttClient.connect();
+                    // 注意：connect方法包括一个默认的无参构造方法，使用默认的new MqttConnectOptions()，不设置参数
+                    mqttClient.connect(mqttConnectOptions);
                 } catch (MqttException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
