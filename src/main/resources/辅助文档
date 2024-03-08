@@ -1,0 +1,6 @@
+本地上传代码到github，报出如下问题时的解决方案：
+ssh: connect to host github.com port 22: Connection timed out
+Please make sure you have the correct access rights
+and the repository exists.
+方案参考：
+https://zhuanlan.zhihu.com/p/524223202?utm_id=0
