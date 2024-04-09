@@ -11,8 +11,9 @@ import org.apache.flink.util.Collector;
 
 /**
  * 从input目录word文件读取数据，以批处理方式统计单词数量
+ * Flink1.17 第六课
  */
-public class WorkCoundBatchDemo {
+public class WordCountBatchDemo {
     public static void main(String[] args) throws Exception {
         // 1.创建执行环境
         ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
