@@ -9,8 +9,9 @@ import org.apache.flink.util.Collector;
 
 /**
  * 从socket源端读取无界数据流，进行单词拆分处理
+ * 老版本代码，把所有的算子合并到一块
  */
-public class WordCountStreamUbboundedDemo {
+public class WordCountStreamUnboundedDemo {
     public static void main(String[] args) throws Exception {
         // 1.创建执行环境
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
