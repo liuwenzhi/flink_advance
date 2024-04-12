@@ -1,10 +1,22 @@
 package cn.supcon.entity;
 
+import lombok.*;
+import lombok.experimental.Accessors;
+
 import java.util.Objects;
 
 /**
  * 模拟数据流水实体类：水位传感器
  */
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString
+@EqualsAndHashCode
+@Builder
+@Accessors(chain = true)
 public class WaterSensor {
 
     /**
@@ -21,51 +33,6 @@ public class WaterSensor {
      * 水位记录
      */
     private Integer vc;
-
-    /**
-     * 注意一个细节：必须提供空参构造器
-     */
-    public WaterSensor() {
-    }
-
-    public WaterSensor(String id, Long ts, Integer vc) {
-        this.id = id;
-        this.ts = ts;
-        this.vc = vc;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public Long getTs() {
-        return ts;
-    }
-
-    public void setTs(Long ts) {
-        this.ts = ts;
-    }
-
-    public Integer getVc() {
-        return vc;
-    }
-
-    public void setVc(Integer vc) {
-        this.vc = vc;
-    }
-
-    @Override
-    public String toString() {
-        return "WaterSensor{" +
-                "id='" + id + '\'' +
-                ", ts=" + ts +
-                ", vc=" + vc +
-                '}';
-    }
 
     @Override
     public boolean equals(Object o) {
