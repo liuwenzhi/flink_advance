@@ -7,3 +7,6 @@ hello flink
 hello java
 hello kava
 hello scala
+
+
+设置flink相关依赖的作用于为provided，这个内容可参考Flink1.17课程中13节的内容

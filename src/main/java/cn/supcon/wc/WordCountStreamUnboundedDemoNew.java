@@ -14,6 +14,7 @@ import org.apache.flink.util.Collector;
  *
  * 服务器上执行命令：nc -lk 7777，
  * 如果服务器本身没有netcat，执行命令安装下：yum install -y netcat
+ * 本机使用的虚拟机是centos7,24年6月停止维护了，暂时安装有问题
  */
 public class WordCountStreamUnboundedDemoNew {
     public static void main(String[] args) throws Exception {
