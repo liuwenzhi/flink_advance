@@ -5,6 +5,8 @@ import org.apache.flink.api.common.functions.MapFunction;
 
 /**
  * 自定义map函数
+ *
+ * Flink1.17 39课
  */
 public class MapFunctionImpl implements MapFunction<WaterSensor, String> {
     @Override
