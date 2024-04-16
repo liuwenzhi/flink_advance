@@ -1,0 +1,2 @@
+flink聚合算子相关代码
+注意：flink中，聚合算子是和keyby成对出现的，通过keyby算子，拿到KeyedStream之后，才能调用对应的聚合算子
