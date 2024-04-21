@@ -5,6 +5,8 @@ import org.apache.flink.api.common.functions.MapFunction;
 
 /**
  * 自定义一个map函数类，根据String类型入参过滤出WaterSensor对象
+ *
+ * Flink1.17 48课
  */
 public class WaterSensorMapFunction implements MapFunction<String, WaterSensor> {
     @Override
