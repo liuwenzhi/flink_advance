@@ -1,1 +1,19 @@
 flink写入算子相关
+查看flink官方文档：直接在浏览器中输入地址：flink.apache.org
+找到documents标签目录，点击flink最新版本的标签，进入connectors目录，查看具体连接算子支持的源和目的端
+
+Apache Kafka (source/sink)
+Apache Cassandra (source/sink)
+Amazon DynamoDB (sink)
+Amazon Kinesis Data Streams (source/sink)
+Amazon Kinesis Data Firehose (sink)
+DataGen (source)
+Elasticsearch (sink)
+Opensearch (sink)
+FileSystem (source/sink)
+RabbitMQ (source/sink)
+Google PubSub (source/sink)
+Hybrid Source (source)
+Apache Pulsar (source)
+JDBC (sink)
+MongoDB (source/sink)
