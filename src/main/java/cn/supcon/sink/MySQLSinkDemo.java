@@ -23,7 +23,7 @@ public class MySQLSinkDemo {
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
         env.setParallelism(1);
         SingleOutputStreamOperator<WaterSensor> sensorDS = env.socketTextStream("172.16.2.23", 7777).map(new WaterSensorMapFunction());
-        // sink方法四大参数，sql，预编译对象，执行参数对象，连接对象
+        // sink方法四大参数，sql，预编译对象，执行参数对象（重试，攒批），连接对象
         SinkFunction<WaterSensor> jdbcSink = JdbcSink.sink("insert into ws values(?,?,?)",
                 new JdbcStatementBuilder<WaterSensor>() {
                     @Override
@@ -43,7 +43,7 @@ public class MySQLSinkDemo {
                         .withUrl("jdbc:mysql://172.16.2.23:3306/ceshi?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=UTF-8")
                         .withUsername("root")
                         .withPassword("Supcon_21")
-                        .withConnectionCheckTimeoutSeconds(60)   // 这个参数在工作中可以不设置，每个并行度线程都会和mysql建立连接，如果实时数据间隔时间比较长，这里还设置了60s超时，实际场景就会报错
+                        .withConnectionCheckTimeoutSeconds(60)   // 两次重试之间的时长
                         .build());
         // JdbcSink还没迁移过来，暂时不能用sinkTo，只能用sink
         sensorDS.addSink(jdbcSink);
