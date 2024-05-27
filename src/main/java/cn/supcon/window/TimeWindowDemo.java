@@ -13,18 +13,21 @@ import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
 import org.apache.flink.streaming.api.datastream.WindowedStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.api.functions.windowing.ProcessWindowFunction;
+import org.apache.flink.streaming.api.windowing.assigners.ProcessingTimeSessionWindows;
+import org.apache.flink.streaming.api.windowing.assigners.SessionWindowTimeGapExtractor;
+import org.apache.flink.streaming.api.windowing.assigners.SlidingProcessingTimeWindows;
 import org.apache.flink.streaming.api.windowing.assigners.TumblingProcessingTimeWindows;
 import org.apache.flink.streaming.api.windowing.time.Time;
 import org.apache.flink.streaming.api.windowing.windows.TimeWindow;
 import org.apache.flink.util.Collector;
 
 /**
- * 全窗口函数：窗口触发时才会调用一次，统一计算窗口中的所有数据
+ * 时间类型的窗口演示，滚动窗口，滑动窗口，会话窗口
  *
  * <p>
- * Flink 1.17 67课
+ * Flink 1.17 69课
  */
-public class WindowProcessDemo {
+public class TimeWindowDemo {
     public static void main(String[] args) throws Exception {
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
         env.setParallelism(1);
@@ -39,8 +42,18 @@ public class WindowProcessDemo {
         SingleOutputStreamOperator<WaterSensor> sensorDS = kafkaSource.map(new WaterSensorMapFunction());
         KeyedStream<WaterSensor, String> sensorKS = sensorDS.keyBy(sensor -> sensor.getId());
 
-        // 1.窗口分配器，创建滚动窗口
-        WindowedStream<WaterSensor, String, TimeWindow> sensorWS = sensorKS.window(TumblingProcessingTimeWindows.of(Time.minutes(1)));
+        // 1.窗口分配器
+        WindowedStream<WaterSensor, String, TimeWindow> sensorWS =
+                // sensorKS.window(TumblingProcessingTimeWindows.of(Time.seconds(20))); 创建滚动窗口，用于对比效果
+                // sensorKS.window(SlidingProcessingTimeWindows.of(Time.seconds(10), Time.seconds(5))); // 窗口大小10s，滑动步长是5s
+                // sensorKS.window(ProcessingTimeSessionWindows.withGap(Time.seconds(5))); // 会话窗口，间隔5s，只要超过5s没有数据来，则前边的数据划分一个窗口，5s之后的数据放到另一个窗口，如果数据持续不断，则一直不划分窗口
+                sensorKS.window(ProcessingTimeSessionWindows.withDynamicGap(new SessionWindowTimeGapExtractor<WaterSensor>() {
+                    @Override
+                    public long extract(WaterSensor element) {
+                        // 提取gap的间隔以毫秒为单位，这里设计从element对象中获取Ts作为动态gap，每来一条记录，更新一次这个gap
+                        return element.getTs() * 1000L;
+                    }
+                })); // 会话窗口，动态gap，这个用的非常少了
         SingleOutputStreamOperator<String> process = sensorWS.process(new ProcessWindowFunction<WaterSensor, String, String, TimeWindow>() {
             // ProcessWindowFunction抽象类四个参数的含义：入参类型，输出类型，key类型，窗口类型
             @Override

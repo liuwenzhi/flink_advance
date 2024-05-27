@@ -158,7 +158,7 @@
             <artifactId>flink-runtime-web</artifactId>
             <version>${flink.version}</version>
         </dependency>
-        <!-- lombok java工具类-->
+        <!-- lombok java工具类，通过注解实现类的属性封装，构造方法封装等-->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
