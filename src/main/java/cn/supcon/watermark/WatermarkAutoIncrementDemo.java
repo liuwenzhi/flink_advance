@@ -20,6 +20,7 @@ import org.apache.flink.util.Collector;
 /**
  * 水位线代码演示：有序数据搭配窗口
  * 基于kafka消息队列做水位线，没有看到效果，参考MonoDemo通过socket方式实现水位线
+ * 注意：带有source源的内容，最好是在源部分直接设置水位线，然后就不能在map之后再通过assignTimestampsAndWatermarks来设置水位线，不能同时存在两个
  *
  * <p>
  * Flink 1.17 77课

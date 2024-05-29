@@ -2,6 +2,7 @@ package cn.supcon.watermark;
 
 import cn.supcon.entity.WaterSensor;
 import cn.supcon.functions.WaterSensorMapFunction;
+import cn.supcon.partition.MyPartitioner;
 import org.apache.commons.lang.time.DateFormatUtils;
 import org.apache.flink.api.common.eventtime.WatermarkStrategy;
 import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
@@ -15,31 +16,34 @@ import org.apache.flink.util.Collector;
 import java.time.Duration;
 
 /**
- * 水位线代码演示：乱序数据搭配窗口
- *
+ * 多并行度下，设置水位线空闲等待时间模拟的输入数据
+ * 1
+ * 3
+ * 5
+ * 7
+ * 9
+ * 11
+ * 13
+ * 多并行度下水位线传递会导致的问题：多个上游算子中，有一个算子一直没有收到数据，或者收到很少的数据，它广播的水位线一直是一个很小的值，
+ * 这种时候会导致下游算子一直取最小值，然后窗口关闭不了。水位线空闲等待时间就是为了处理这个问题。
  * <p>
- * Flink 1.17 78课
+ * Flink 1.17 83课
  */
-public class WatermarkOutOfOrdernessDemo {
+public class WatermarkIdlenessDemo {
     public static void main(String[] args) throws Exception {
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
-        // env.setParallelism(1);
-        // 演示watermark多并行度下的场景
         env.setParallelism(2);
-        SingleOutputStreamOperator<WaterSensor> sensorDS = env.socketTextStream("192.168.190.128", 7777).map(new WaterSensorMapFunction());
-        // 指定watermark策略，乱序的watermark策略，存在乱序数据，这里单独设置等待时间为3秒
-        WatermarkStrategy<WaterSensor> waterSensorWatermarkStrategy = WatermarkStrategy.<WaterSensor>forBoundedOutOfOrderness(Duration.ofSeconds(3)).withTimestampAssigner(
-                (element, recordTimestamp) -> {
-                    System.out.println("数据=" + element + "，recordTs=" + recordTimestamp);
-                    return element.getTs() * 1000L;
-                });
-        // 注意，配合水位线功能，定义窗口的时候，需要使用事件时间窗口，之前的Processing窗口是处理时间窗口
-        SingleOutputStreamOperator<WaterSensor> waterSensorMarkDS = sensorDS.assignTimestampsAndWatermarks(waterSensorWatermarkStrategy);
-
-        waterSensorMarkDS.keyBy(sensor -> sensor.getId()).window(TumblingEventTimeWindows.of(Time.seconds(10))).process(new ProcessWindowFunction<WaterSensor, String, String, TimeWindow>() {
+        SingleOutputStreamOperator<Integer> socketDS = env.socketTextStream("192.168.190.128", 8888)
+                .partitionCustom(new MyPartitioner(), r -> r)// 设置自定义分区器，将元素本身作为分区参数
+                .map(r -> Integer.parseInt(r))
+                .assignTimestampsAndWatermarks(WatermarkStrategy.<Integer>forMonotonousTimestamps()
+                        .withTimestampAssigner((r, ts) -> r * 1000L)
+                        .withIdleness(Duration.ofSeconds(5)) // 空闲等待5s
+                );
+        socketDS.keyBy(r -> r % 2).window(TumblingEventTimeWindows.of(Time.seconds(10))).process(new ProcessWindowFunction<Integer, String, Integer, TimeWindow>() {
             // ProcessWindowFunction抽象类四个参数的含义：入参类型，输出类型，key类型，窗口类型
             @Override
-            public void process(String s, Context context, Iterable<WaterSensor> elements, Collector<String> out) throws Exception {
+            public void process(Integer key, Context context, Iterable<Integer> elements, Collector<String> out) throws Exception {
                 // process 函数四个参数的含义：分组的key，context：上下文，elements：窗口存的数据，输出采集器
                 long start = context.window().getStart();
                 long end = context.window().getEnd();
@@ -48,7 +52,7 @@ public class WatermarkOutOfOrdernessDemo {
                 // 输出一个数据总量检查下
                 long count = elements.spliterator().estimateSize();
                 // 用采集器进行输出
-                out.collect("key=" + s + "的窗口开始时间：" + windowStart + "，窗口结束时间：" + windowEnd + "，数据总量：" + count + "，数据信息：" + elements);
+                out.collect("key=" + key + "的窗口开始时间：" + windowStart + "，窗口结束时间：" + windowEnd + "，数据总量：" + count + "，数据信息：" + elements);
             }
         }).print();
         env.execute();
