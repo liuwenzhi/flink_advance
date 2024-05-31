@@ -17,6 +17,8 @@ import org.apache.flink.streaming.api.windowing.time.Time;
  * 2、根据keyby的key，来进行匹配关联
  * 3、只能拿到匹配上的数据
  *
+ * 这种join方式，官方不推荐使用，因为只涉及到窗口中的数据匹配
+ *
  * <p>
  * Flink 1.17 87课
  */
