@@ -123,7 +123,7 @@
             <!--<version>5.1.38</version>-->
             <version>8.0.30</version>
         </dependency>
-        <!-- Needed for Flink Table/SQL API -->
+        <!-- Needed for Flink Table/SQL API，flink开发涉及把checkpoint保存到hdfs路径上的时候，也需要这个依赖 -->
         <dependency>
             <groupId>org.apache.hadoop</groupId>
             <artifactId>hadoop-client</artifactId>
@@ -169,6 +169,13 @@
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-all</artifactId>
             <version>${hutool.version}</version>
+        </dependency>
+
+        <!--flink后端状态罗盘管理：rocksdb依赖-->
+        <dependency>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-statebackend-rocksdb</artifactId>
+            <version>${flink.version}</version>
         </dependency>
     </dependencies>
     <!-- flink的编译插件适合使用shade，使用assembly可能存在问题-->
