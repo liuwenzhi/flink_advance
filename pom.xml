@@ -177,6 +177,13 @@
             <artifactId>flink-statebackend-rocksdb</artifactId>
             <version>${flink.version}</version>
         </dependency>
+        <!--增量检查点相关依赖-->
+        <!--<dependency>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-statebackend-changelog</artifactId>
+            <version>${flink.version}</version>
+            <scope>runtime</scope>
+        </dependency>-->
     </dependencies>
     <!-- flink的编译插件适合使用shade，使用assembly可能存在问题-->
     <build>
