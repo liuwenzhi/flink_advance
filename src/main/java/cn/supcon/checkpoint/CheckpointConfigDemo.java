@@ -29,7 +29,7 @@ public class CheckpointConfigDemo {
         env.setParallelism(1);
 
         // TODO 开启 Changelog
-        // 要求checkpoint的最大并发必须为1，其他参数建议在flink-conf配置文件中去指定
+        // 要求checkpoint的最大并发必须为1，其他参数建议在flink-conf配置文件中去指定，flink15之后新增加的功能
         // env.enableChangelogStateBackend(true);
 
         // 代码中用到hdfs，需要导入hadoop依赖、指定访问hdfs的用户名，这里本地测试使用E盘目录，不用管这个

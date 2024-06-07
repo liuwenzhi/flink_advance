@@ -1,0 +1,9 @@
+checkpoint相关
+109~130课
+写数据到kafka可参考56课代码：SinkKafkaWithKey
+129课flink sink数据到kafka的细节：事务超时时间，要大于checkpoint时间间隔
+
+Flink的Kafka连接器中配置的事务超时时间transaction.timeout.ms默认是1小时，
+而Kafka集群配置的事务最大超时时间transaction.max.timeout.ms默认是15分钟。
+所以在检查点保存时间很长时，有可能出现Kafka已经认为事务超时了，丢弃了预提交的数据；
+而Sink任务认为还可以继续等待。
